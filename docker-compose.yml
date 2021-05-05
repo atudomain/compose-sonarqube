@@ -20,6 +20,7 @@ services:
             - '$GITLAB_HOME/data:/var/opt/gitlab'
     sonar:
         image: sonarqube:community
+        restart: unless-stopped
         hostname: 'sonar.ci.local'
         domainname: 'sonar.ci.local'
         depends_on: 
@@ -36,6 +37,7 @@ services:
             - "127.0.0.1:9000:9000"
     db:
         image: postgres:12
+        restart: unless-stopped
         environment: 
             POSTGRES_USER: sonar
             POSTGRES_PASSWORD: sonar
