@@ -1,23 +1,6 @@
 version: "3"
 
 services:
-    gitlab:
-        image: 'gitlab/gitlab-ee:latest'
-        restart: unless-stopped
-        hostname: 'gitlab.ci.local'
-        domainname: 'gitlab.ci.local'
-        environment: 
-            GITLAB_OMNIBUS_CONFIG: |
-                external_url 'http://gitlab.ci.local'
-                # other gitlab.rb configurations
-        ports:
-            - "127.0.0.1:80:80"
-            - "127.0.0.1:443:443"
-            - "127.0.0.1:4422:22"
-        volumes:
-            - '$GITLAB_HOME/config:/etc/gitlab'
-            - '$GITLAB_HOME/logs:/var/log/gitlab'
-            - '$GITLAB_HOME/data:/var/opt/gitlab'
     sonar:
         image: sonarqube:community
         restart: unless-stopped
@@ -35,10 +18,14 @@ services:
             - $SONAR_HOME/logs:/opt/sonarqube/logs
         ports:
             - "127.0.0.1:9000:9000"
+        ulimits:
+            nofile:
+                soft: 65535
+                hard: 65535
     db:
         image: postgres:12
         restart: unless-stopped
-        environment: 
+        environment:
             POSTGRES_USER: sonar
             POSTGRES_PASSWORD: sonar
         volumes:
